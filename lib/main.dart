@@ -19,9 +19,11 @@ class AgendamentoEventoTela extends StatefulWidget {
 class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
   static final DateTime _dataPadrao = DateTime.now();
   static const TimeOfDay _horarioPadrao = TimeOfDay(hour: 19, minute: 0);
+  static const String _tipoEventoPadrao = 'Aniversario';
 
   late DateTime _dataSelecionada;
   late TimeOfDay _horarioSelecionado;
+  late String _tipoEventoSelecionado;
 
   @override
   void initState() {
@@ -32,12 +34,14 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
   void _resetarValores() {
     _dataSelecionada = _dataPadrao;
     _horarioSelecionado = _horarioPadrao;
+    _tipoEventoSelecionado = _tipoEventoPadrao;
   }
 
   void _salvarFormulario() {
     debugPrint('=== RESUMO DO AGENDAMENTO ===');
     debugPrint('Data: ${_formatarData(_dataSelecionada)}');
     debugPrint('Horario: ${_horarioSelecionado.format(context)}');
+    debugPrint('Tipo de evento: $_tipoEventoSelecionado');
   }
 
   Future<void> _selecionarData() async {
@@ -109,6 +113,35 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'Tipo de Evento',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            DropdownButtonFormField<String>(
+              initialValue: _tipoEventoSelecionado,
+              decoration: const InputDecoration(border: OutlineInputBorder()),
+              items: const [
+                DropdownMenuItem(
+                  value: 'Aniversario',
+                  child: Text('Aniversario'),
+                ),
+                DropdownMenuItem(value: 'Casamento', child: Text('Casamento')),
+                DropdownMenuItem(
+                  value: 'Corporativo',
+                  child: Text('Corporativo'),
+                ),
+                DropdownMenuItem(value: 'Outro', child: Text('Outro')),
+              ],
+              onChanged: (String? novoValor) {
+                if (novoValor != null) {
+                  setState(() {
+                    _tipoEventoSelecionado = novoValor;
+                  });
+                }
+              },
             ),
           ],
         ),
