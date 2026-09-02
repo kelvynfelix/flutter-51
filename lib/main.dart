@@ -24,12 +24,19 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
   static const String _tipoEventoPadrao = 'Aniversario';
   static const double _quantidadeConvidadosPadrao = 50;
   static const Visibilidade _visibilidadePadrao = Visibilidade.privado;
+  static const Map<String, bool> _servicosPadrao = {
+    'Buffet': false,
+    'Fotografia': false,
+    'Decoracao': false,
+    'DJ': false,
+  };
 
   late DateTime _dataSelecionada;
   late TimeOfDay _horarioSelecionado;
   late String _tipoEventoSelecionado;
   late double _quantidadeConvidados;
   late Visibilidade _visibilidadeSelecionada;
+  late Map<String, bool> _servicosSelecionados;
 
   @override
   void initState() {
@@ -43,6 +50,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
     _tipoEventoSelecionado = _tipoEventoPadrao;
     _quantidadeConvidados = _quantidadeConvidadosPadrao;
     _visibilidadeSelecionada = _visibilidadePadrao;
+    _servicosSelecionados = Map<String, bool>.from(_servicosPadrao);
   }
 
   void _salvarFormulario() {
@@ -52,6 +60,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
     debugPrint('Tipo de evento: $_tipoEventoSelecionado');
     debugPrint('Quantidade de convidados: ${_quantidadeConvidados.round()}');
     debugPrint('Visibilidade: ${_visibilidadeSelecionada.name}');
+    debugPrint('Servicos adicionais: $_servicosSelecionados');
   }
 
   Future<void> _selecionarData() async {
@@ -95,7 +104,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
         title: const Text('Novo Evento Social'),
         backgroundColor: Colors.deepPurple.shade200,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -205,6 +214,24 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
                     value: Visibilidade.apenasConvidados,
                   ),
                 ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'Servicos Adicionais',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            ..._servicosSelecionados.keys.map(
+              (String servico) => CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(servico),
+                value: _servicosSelecionados[servico],
+                controlAffinity: ListTileControlAffinity.trailing,
+                onChanged: (bool? selecionado) {
+                  setState(() {
+                    _servicosSelecionados[servico] = selecionado ?? false;
+                  });
+                },
               ),
             ),
           ],
