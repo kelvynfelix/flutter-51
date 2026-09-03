@@ -20,9 +20,11 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
   static final DateTime _dataPadrao = DateTime.now();
   static const TimeOfDay _horarioPadrao = TimeOfDay(hour: 19, minute: 0);
   static const String _tipoPadrao = 'Aniversario';
+  static const double _convidadosPadrao = 50;
   late DateTime _dataSelecionada;
   late TimeOfDay _horarioSelecionado;
   late String _tipoEventoSelecionado;
+  late double _quantidadeConvidados;
 
   @override
   void initState() {
@@ -40,6 +42,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
       _dataSelecionada = _dataPadrao;
       _horarioSelecionado = _horarioPadrao;
       _tipoEventoSelecionado = _tipoPadrao;
+      _quantidadeConvidados = _convidadosPadrao;
     });
   }
 
@@ -69,6 +72,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
     debugPrint('Data: ${_dataSelecionada.day}/${_dataSelecionada.month}/${_dataSelecionada.year}');
     debugPrint('Horario: ${_horarioSelecionado.format(context)}');
     debugPrint('Tipo de evento: $_tipoEventoSelecionado');
+    debugPrint('Quantidade de convidados: ${_quantidadeConvidados.round()}');
   }
 
   String _formatarData(DateTime data) {
@@ -129,6 +133,22 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
                   setState(() => _tipoEventoSelecionado = novoValor);
                 }
               },
+            ),
+            const Divider(height: 32),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Quantidade de convidados', style: Theme.of(context).textTheme.titleMedium),
+                Text('${_quantidadeConvidados.round()} pessoas', style: const TextStyle(fontWeight: FontWeight.bold)),
+              ],
+            ),
+            Slider(
+              value: _quantidadeConvidados,
+              min: 10,
+              max: 500,
+              divisions: 49,
+              label: _quantidadeConvidados.round().toString(),
+              onChanged: (novoValor) => setState(() => _quantidadeConvidados = novoValor),
             ),
           ],
         ),
