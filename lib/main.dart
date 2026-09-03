@@ -92,7 +92,11 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
     }
   }
 
-  void _salvarFormulario() {
+  Future<void> _salvarFormulario() async {
+    final servicos = _servicosSelecionados.entries
+        .where((item) => item.value)
+        .map((item) => item.key)
+        .join(', ');
     debugPrint('Data: ${_dataSelecionada.day}/${_dataSelecionada.month}/${_dataSelecionada.year}');
     debugPrint('Horario: ${_horarioSelecionado.format(context)}');
     debugPrint('Tipo de evento: $_tipoEventoSelecionado');
@@ -101,6 +105,44 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
     debugPrint('Servicos adicionais: $_servicosSelecionados');
     debugPrint('Restricoes alimentares: $_tagsSelecionadas');
     debugPrint('Lembrete automatico: $_lembreteAtivo');
+
+    final confirmou = await showModalBottomSheet<bool>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+          shrinkWrap: true,
+          children: [
+            Text('Resumo do agendamento', style: Theme.of(context).textTheme.headlineSmall),
+            _itemResumo('Data e horario', '${_formatarData(_dataSelecionada)} - ${_horarioSelecionado.format(context)}', Icons.calendar_today),
+            _itemResumo('Tipo de evento', _tipoEventoSelecionado, Icons.category_outlined),
+            _itemResumo('Convidados', '${_quantidadeConvidados.round()} pessoas', Icons.people_outline),
+            _itemResumo('Visibilidade', _visibilidadeSelecionada.name, Icons.visibility_outlined),
+            _itemResumo('Servicos adicionais', servicos.isEmpty ? 'Nenhum' : servicos, Icons.room_service_outlined),
+            _itemResumo('Restricoes alimentares', _tagsSelecionadas.isEmpty ? 'Nenhuma' : _tagsSelecionadas.join(', '), Icons.restaurant_outlined),
+            _itemResumo('Lembrete automatico', _lembreteAtivo ? 'Ativado' : 'Desativado', Icons.notifications_outlined),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Confirmar salvamento'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (mounted && confirmou == true) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Evento salvo com sucesso!')));
+    }
+  }
+
+  Widget _itemResumo(String titulo, String valor, IconData icone) {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: Icon(icone),
+      title: Text(titulo),
+      subtitle: Text(valor),
+    );
   }
 
   String _formatarData(DateTime data) {
@@ -222,6 +264,8 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
                   }
                 }),
               )).toList(),
+            ),
+            const Divider(height: 32),
               const Divider(height: 32),
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
@@ -230,7 +274,25 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
                 value: _lembreteAtivo,
                 onChanged: (ativo) => setState(() => _lembreteAtivo = ativo),
               ),
-            ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: _resetarValores,
+                      style: OutlinedButton.styleFrom(foregroundColor: Colors.red),
+                      child: const Text('Cancelar'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: _salvarFormulario,
+                      child: const Text('Salvar'),
+                    ),
+                  ),
+                ],
+              ),
           ],
         ),
       ),
