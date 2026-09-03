@@ -19,8 +19,10 @@ class AgendamentoEventoTela extends StatefulWidget {
 class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
   static final DateTime _dataPadrao = DateTime.now();
   static const TimeOfDay _horarioPadrao = TimeOfDay(hour: 19, minute: 0);
+  static const String _tipoPadrao = 'Aniversario';
   late DateTime _dataSelecionada;
   late TimeOfDay _horarioSelecionado;
+  late String _tipoEventoSelecionado;
 
   @override
   void initState() {
@@ -37,6 +39,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
     setState(() {
       _dataSelecionada = _dataPadrao;
       _horarioSelecionado = _horarioPadrao;
+      _tipoEventoSelecionado = _tipoPadrao;
     });
   }
 
@@ -60,6 +63,12 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
     if (horario != null) {
       setState(() => _horarioSelecionado = horario);
     }
+  }
+
+  void _salvarFormulario() {
+    debugPrint('Data: ${_dataSelecionada.day}/${_dataSelecionada.month}/${_dataSelecionada.year}');
+    debugPrint('Horario: ${_horarioSelecionado.format(context)}');
+    debugPrint('Tipo de evento: $_tipoEventoSelecionado');
   }
 
   String _formatarData(DateTime data) {
@@ -102,6 +111,24 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
                   ),
                 ),
               ],
+            ),
+            const Divider(height: 32),
+            Text(
+              'Tipo de evento',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            DropdownButtonFormField<String>(
+              initialValue: _tipoEventoSelecionado,
+              decoration: const InputDecoration(border: OutlineInputBorder()),
+              items: ['Aniversario', 'Casamento', 'Corporativo', 'Outro']
+                  .map((tipo) => DropdownMenuItem(value: tipo, child: Text(tipo)))
+                  .toList(),
+              onChanged: (novoValor) {
+                if (novoValor != null) {
+                  setState(() => _tipoEventoSelecionado = novoValor);
+                }
+              },
             ),
           ],
         ),
