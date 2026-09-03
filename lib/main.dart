@@ -30,12 +30,19 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
     'Decoracao': false,
     'DJ': false,
   };
+  static const List<String> _tagsDisponiveis = [
+    'Vegetariano',
+    'Sem Gluten',
+    'Sem Lactose',
+    'Vegano',
+  ];
   late DateTime _dataSelecionada;
   late TimeOfDay _horarioSelecionado;
   late String _tipoEventoSelecionado;
   late double _quantidadeConvidados;
   late Visibilidade _visibilidadeSelecionada;
   late Map<String, bool> _servicosSelecionados;
+  late List<String> _tagsSelecionadas;
 
   @override
   void initState() {
@@ -56,6 +63,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
       _quantidadeConvidados = _convidadosPadrao;
       _visibilidadeSelecionada = _visibilidadePadrao;
       _servicosSelecionados = Map<String, bool>.from(_servicosPadrao);
+      _tagsSelecionadas = <String>[];
     });
   }
 
@@ -88,6 +96,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
     debugPrint('Quantidade de convidados: ${_quantidadeConvidados.round()}');
     debugPrint('Visibilidade: $_visibilidadeSelecionada');
     debugPrint('Servicos adicionais: $_servicosSelecionados');
+    debugPrint('Restricoes alimentares: $_tagsSelecionadas');
   }
 
   String _formatarData(DateTime data) {
@@ -191,6 +200,24 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
                 value: _servicosSelecionados[servico],
                 onChanged: (marcado) => setState(() => _servicosSelecionados[servico] = marcado ?? false),
               ),
+            ),
+            const Divider(height: 32),
+            Text('Restricoes alimentares', style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: _tagsDisponiveis.map((tag) => FilterChip(
+                label: Text(tag),
+                selected: _tagsSelecionadas.contains(tag),
+                onSelected: (selecionado) => setState(() {
+                  if (selecionado) {
+                    _tagsSelecionadas.add(tag);
+                  } else {
+                    _tagsSelecionadas.remove(tag);
+                  }
+                }),
+              )).toList(),
             ),
           ],
         ),
