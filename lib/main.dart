@@ -9,6 +9,8 @@ void main() {
   );
 }
 
+enum Visibilidade { publico, privado, convidados }
+
 class AgendamentoEventoTela extends StatefulWidget {
   const AgendamentoEventoTela({super.key});
 
@@ -21,10 +23,12 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
   static const TimeOfDay _horarioPadrao = TimeOfDay(hour: 19, minute: 0);
   static const String _tipoPadrao = 'Aniversario';
   static const double _convidadosPadrao = 50;
+  static const Visibilidade _visibilidadePadrao = Visibilidade.privado;
   late DateTime _dataSelecionada;
   late TimeOfDay _horarioSelecionado;
   late String _tipoEventoSelecionado;
   late double _quantidadeConvidados;
+  late Visibilidade _visibilidadeSelecionada;
 
   @override
   void initState() {
@@ -43,6 +47,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
       _horarioSelecionado = _horarioPadrao;
       _tipoEventoSelecionado = _tipoPadrao;
       _quantidadeConvidados = _convidadosPadrao;
+      _visibilidadeSelecionada = _visibilidadePadrao;
     });
   }
 
@@ -73,6 +78,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
     debugPrint('Horario: ${_horarioSelecionado.format(context)}');
     debugPrint('Tipo de evento: $_tipoEventoSelecionado');
     debugPrint('Quantidade de convidados: ${_quantidadeConvidados.round()}');
+    debugPrint('Visibilidade: $_visibilidadeSelecionada');
   }
 
   String _formatarData(DateTime data) {
@@ -149,6 +155,23 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
               divisions: 49,
               label: _quantidadeConvidados.round().toString(),
               onChanged: (novoValor) => setState(() => _quantidadeConvidados = novoValor),
+            ),
+            const Divider(height: 32),
+            Text('Visibilidade do evento', style: Theme.of(context).textTheme.titleMedium),
+            RadioGroup<Visibilidade>(
+              groupValue: _visibilidadeSelecionada,
+              onChanged: (valor) {
+                if (valor != null) {
+                  setState(() => _visibilidadeSelecionada = valor);
+                }
+              },
+              child: Column(
+                children: const [
+                  RadioListTile(value: Visibilidade.publico, title: Text('Publico')),
+                  RadioListTile(value: Visibilidade.privado, title: Text('Privado')),
+                  RadioListTile(value: Visibilidade.convidados, title: Text('Apenas convidados')),
+                ],
+              ),
             ),
           ],
         ),
