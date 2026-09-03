@@ -36,6 +36,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
     'Sem Lactose',
     'Vegano',
   ];
+  static const bool _lembretePadrao = true;
   late DateTime _dataSelecionada;
   late TimeOfDay _horarioSelecionado;
   late String _tipoEventoSelecionado;
@@ -43,6 +44,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
   late Visibilidade _visibilidadeSelecionada;
   late Map<String, bool> _servicosSelecionados;
   late List<String> _tagsSelecionadas;
+  late bool _lembreteAtivo;
 
   @override
   void initState() {
@@ -64,6 +66,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
       _visibilidadeSelecionada = _visibilidadePadrao;
       _servicosSelecionados = Map<String, bool>.from(_servicosPadrao);
       _tagsSelecionadas = <String>[];
+      _lembreteAtivo = _lembretePadrao;
     });
   }
 
@@ -97,6 +100,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
     debugPrint('Visibilidade: $_visibilidadeSelecionada');
     debugPrint('Servicos adicionais: $_servicosSelecionados');
     debugPrint('Restricoes alimentares: $_tagsSelecionadas');
+    debugPrint('Lembrete automatico: $_lembreteAtivo');
   }
 
   String _formatarData(DateTime data) {
@@ -218,6 +222,14 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
                   }
                 }),
               )).toList(),
+              const Divider(height: 32),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Enviar lembrete automatico'),
+                subtitle: const Text('Notificar convidados 24 horas antes do evento'),
+                value: _lembreteAtivo,
+                onChanged: (ativo) => setState(() => _lembreteAtivo = ativo),
+              ),
             ),
           ],
         ),
