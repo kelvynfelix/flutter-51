@@ -30,6 +30,12 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
     'Decoracao': false,
     'DJ': false,
   };
+  static const List<String> _tagsPadrao = [
+    'Vegetariano',
+    'Sem Gluten',
+    'Sem Lactose',
+    'Vegano',
+  ];
 
   late DateTime _dataSelecionada;
   late TimeOfDay _horarioSelecionado;
@@ -37,6 +43,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
   late double _quantidadeConvidados;
   late Visibilidade _visibilidadeSelecionada;
   late Map<String, bool> _servicosSelecionados;
+  late List<String> _tagsSelecionadas;
 
   @override
   void initState() {
@@ -51,6 +58,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
     _quantidadeConvidados = _quantidadeConvidadosPadrao;
     _visibilidadeSelecionada = _visibilidadePadrao;
     _servicosSelecionados = Map<String, bool>.from(_servicosPadrao);
+    _tagsSelecionadas = <String>[];
   }
 
   void _salvarFormulario() {
@@ -61,6 +69,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
     debugPrint('Quantidade de convidados: ${_quantidadeConvidados.round()}');
     debugPrint('Visibilidade: ${_visibilidadeSelecionada.name}');
     debugPrint('Servicos adicionais: $_servicosSelecionados');
+    debugPrint('Restricoes alimentares: $_tagsSelecionadas');
   }
 
   Future<void> _selecionarData() async {
@@ -233,6 +242,31 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
                   });
                 },
               ),
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'Restricoes Alimentares (Tags)',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: _tagsPadrao.map((String tag) {
+                return FilterChip(
+                  label: Text(tag),
+                  selected: _tagsSelecionadas.contains(tag),
+                  onSelected: (bool selecionada) {
+                    setState(() {
+                      if (selecionada) {
+                        _tagsSelecionadas.add(tag);
+                      } else {
+                        _tagsSelecionadas.remove(tag);
+                      }
+                    });
+                  },
+                );
+              }).toList(),
             ),
           ],
         ),
