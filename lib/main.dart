@@ -54,14 +54,16 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
   }
 
   void _resetarValores() {
-    _dataSelecionada = _dataPadrao;
-    _horarioSelecionado = _horarioPadrao;
-    _tipoEventoSelecionado = _tipoEventoPadrao;
-    _quantidadeConvidados = _quantidadeConvidadosPadrao;
-    _visibilidadeSelecionada = _visibilidadePadrao;
-    _servicosSelecionados = Map<String, bool>.from(_servicosPadrao);
-    _tagsSelecionadas = <String>[];
-    _lembreteAtivo = _lembretePadrao;
+    setState(() {
+      _dataSelecionada = _dataPadrao;
+      _horarioSelecionado = _horarioPadrao;
+      _tipoEventoSelecionado = _tipoEventoPadrao;
+      _quantidadeConvidados = _quantidadeConvidadosPadrao;
+      _visibilidadeSelecionada = _visibilidadePadrao;
+      _servicosSelecionados = Map<String, bool>.from(_servicosPadrao);
+      _tagsSelecionadas = <String>[];
+      _lembreteAtivo = _lembretePadrao;
+    });
   }
 
   void _salvarFormulario() {
@@ -285,6 +287,24 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
                   _lembreteAtivo = novoValor;
                 });
               },
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: _resetarValores,
+                    child: const Text('Cancelar'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _salvarFormulario,
+                    child: const Text('Salvar'),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
